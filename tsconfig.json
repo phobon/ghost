@@ -7,7 +7,9 @@
       "@/hooks/*": ["hooks/*"],
       "@/hooks": ["hooks/index"],
       "@/api/*": ["pages/api/*"],
-      "@/api": ["pages/api/index"]
+      "@/api": ["pages/api/index"],
+      "@/atoms/*": ["atoms/*"],
+      "@/atoms": ["atoms/index"],
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],

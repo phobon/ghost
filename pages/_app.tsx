@@ -1,23 +1,18 @@
 import React from "react";
 import { AppProps } from "next/app";
+import { Provider } from "jotai";
 import { ThemeProvider } from "styled-components";
 import { theme } from "@phobon/tokens";
-import { MDXProvider } from "@mdx-js/react";
 import { AnimatePresence } from "framer-motion";
-
-const components = {
-  // Map components as required here. Move this to local state to update
-  // at runtime, which may not really be needed
-};
 
 function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
-      <MDXProvider components={components}>
-        <AnimatePresence exitBeforeEnter>
+      <AnimatePresence exitBeforeEnter>
+        <Provider>
           <Component {...pageProps} />
-        </AnimatePresence>
-      </MDXProvider>
+        </Provider>
+      </AnimatePresence>
     </ThemeProvider>
   );
 }
