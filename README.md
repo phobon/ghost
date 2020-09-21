@@ -36,3 +36,5 @@ const Image = () => {
 
 + Handle scroll synchronisation somehow - with a library or with a RAF render loop
   + Try this with a render loop to start with - to keep the original browser's scrollbar might be a little bit tough
+
++ Handle culling using a windowing algorithm if possible https://threejsfundamentals.org/threejs/lessons/threejs-multiple-scenes.html
