@@ -10,6 +10,8 @@
       "@/api": ["pages/api/index"],
       "@/atoms/*": ["atoms/*"],
       "@/atoms": ["atoms/index"],
+      "@/materials/*": ["materials/*"],
+      "@/materials": ["materials/index"],
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
