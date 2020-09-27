@@ -2,8 +2,13 @@ import React, { useRef } from "react";
 import { ShaderMaterial, Color } from "three";
 import { extend, useFrame } from "react-three-fiber";
 import mergeRefs from "react-merge-refs";
+import lerp from "lerp";
+
+import fragmentShader from "./grayscale.glsl"
 
 type GrayscaleMaterialType = JSX.IntrinsicElements["meshStandardMaterial"] & {
+  factor: number;
+  time: number;
 };
 
 declare global {
@@ -24,23 +29,32 @@ const vertexShader = /* glsl */`
   } 
 `;
 
-const fragmentShader = /* glsl */`
-  uniform sampler2D tex;
-  uniform float hasTexture;
-  uniform vec3 color;
+// const fragmentShader = /* glsl */`
+//   // #pragma glslify: noise = require(glsl-noise/simplex/2d);
 
-  varying vec2 vUv;
+//   uniform sampler2D tex;
+//   uniform float time;
+//   uniform float hasTexture;
+//   uniform vec3 color;
+//   uniform float factor;
 
-  void main() {
-    // Create 3 texture buffers, each at a different offset (essentially the normal and 2 copies)
-    vec4 cga = texture2D(tex, vUv);
+//   varying vec2 vUv;
 
-    if (hasTexture == 1.0) {
-      gl_FragColor = cga;
-    }
-    else gl_FragColor = vec4(color, 1.0);
-  }
-`;
+//   void main() {
+//     // vec4 cga = texture2D(tex, vUv);
+
+//     // float n = noise(vUv.xy);
+//     // float d = 1.0 - distance(n, vec2(0.5));
+//     // cga *= step(0.5, d);
+
+//     gl_FragColor = vec4(vec3(1.0, factor, 1.0), 1.0);
+
+//     // if (hasTexture == 1.0) {
+//     //   gl_FragColor = cga;
+//     // }
+//     // else gl_FragColor = vec4(color, 1.0);
+//   }
+// `;
 
 class GrayscaleMaterialImpl extends ShaderMaterial {
   constructor() {
@@ -51,6 +65,9 @@ class GrayscaleMaterialImpl extends ShaderMaterial {
         tex: { value: null },
         hasTexture: { value: 0 },
         color: { value: new Color("#888888") },
+        time: { value: 0.0 },
+        factor: { value: 0.0 },
+        angle: { value: 0.0 },
       },
     });
   }
@@ -67,15 +84,40 @@ class GrayscaleMaterialImpl extends ShaderMaterial {
   get color() {
     return this.uniforms.color.value;
   }
+
+  get factor() {
+    return this.uniforms.factor.value;
+  }
+
+  set factor(value) {
+    this.uniforms.factor.value = value;
+  }
+
+  get time() {
+    return this.uniforms.time.value;
+  }
+
+  set time(value) {
+    this.uniforms.time.value = value;
+  }
+
+  get angle() {
+    return this.uniforms.angle.value;
+  }
+
+  set angle(value) {
+    this.uniforms.angle.value = value;
+  }
 }
 
 extend({ GrayscaleMaterialImpl });
 
 export const GrayscaleMaterial = React.forwardRef(
-  ({ ...props }: any, ref) => {
+  ({ hovered, ...props }: any, ref) => {
     const materialRef = useRef<GrayscaleMaterialType>();
-
     useFrame(() => {
+      materialRef.current.factor = lerp(materialRef.current.factor, hovered ? 1.0 : 0.0, 0.1);
+      materialRef.current.time++;
     });
 
     return (
