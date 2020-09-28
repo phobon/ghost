@@ -3,7 +3,8 @@ import { TextureLoader } from "three";
 import { useLoader, useFrame } from "react-three-fiber";
 import { useEffect } from "react";
 
-import { GrayscaleMaterial } from "@/materials/GrayscaleMaterial";
+// import { NoisePatchMaterial } from "@/materials/NoisePatchMaterial";
+import { NoiseWaveMaterial } from "@/materials/NoiseWaveMaterial";
 
 export const WebGLImage = ({ src, image, width, height, ...props }) => {
   // This component is responsible for:
@@ -59,7 +60,7 @@ export const WebGLImage = ({ src, image, width, height, ...props }) => {
       ref={meshRef}
       position={[0, 0, 1]}>
       <planeBufferGeometry attach="geometry" args={[attributes.width, attributes.height, 32, 32]} />
-      <GrayscaleMaterial
+      <NoiseWaveMaterial
         color={"white"}
         map={texture}
         hovered={hovered}

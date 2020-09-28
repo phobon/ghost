@@ -1,1 +1,1 @@
-export * from './GrayscaleMaterial';
+export * from './NoisePatchMaterial';
