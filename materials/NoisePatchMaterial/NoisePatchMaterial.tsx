@@ -4,7 +4,7 @@ import { extend, useFrame } from "react-three-fiber";
 import mergeRefs from "react-merge-refs";
 import lerp from "lerp";
 
-import fragmentShader from "./shader.frag"
+import fragmentShader from "./shader.frag";
 
 type NoisePatchMaterialType = JSX.IntrinsicElements["meshStandardMaterial"] & {
   factor: number;
@@ -20,12 +20,20 @@ declare global {
   }
 }
 
-const vertexShader = /* glsl */`
+const vertexShader = /* glsl */ `
   varying vec2 vUv;
 
   void main() {
     vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+    mat4 sPos = mat4(
+      vec4(2.0,0.0,0.0,0.0),
+      vec4(0.0,2.0,0.0,0.0),
+      vec4(0.0,0.0,1.0,0.0),
+      vec4(0.0,0.0,0.0,1.0)
+    );
+
+    gl_Position = projectionMatrix * modelViewMatrix * sPos * vec4(position, 1.0);
   } 
 `;
 
@@ -89,7 +97,11 @@ export const NoisePatchMaterial = React.forwardRef(
   ({ hovered, ...props }: any, ref) => {
     const materialRef = useRef<NoisePatchMaterialType>();
     useFrame(() => {
-      materialRef.current.factor = lerp(materialRef.current.factor, hovered ? 1.0 : 0.0, 0.1);
+      materialRef.current.factor = lerp(
+        materialRef.current.factor,
+        hovered ? 1.0 : 0.0,
+        0.1
+      );
       materialRef.current.time++;
     });
 
